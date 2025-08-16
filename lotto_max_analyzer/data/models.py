@@ -102,7 +102,7 @@ class Recommendation:
 
     def __post_init__(self):
         """Validate recommendation data."""
-        valid_strategies = ['hot_numbers', 'cold_numbers', 'balanced']
+        valid_strategies = ['hot_numbers', 'cold_numbers', 'balanced', 'mathematical', 'mathematical_mathematical', 'mathematical_chaos', 'mathematical_fibonacci', 'mathematical_prime']
         if self.strategy not in valid_strategies:
             raise ValueError(f"Strategy must be one of {valid_strategies}")
         

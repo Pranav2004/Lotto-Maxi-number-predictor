@@ -66,14 +66,20 @@ Examples:
     
     analysis_group.add_argument(
         '--recommend',
-        choices=['hot', 'cold', 'balanced', 'all'],
-        help='Generate number recommendations (hot=frequent numbers, cold=overdue numbers, balanced=mixed strategy, all=show all strategies)'
+        choices=['hot', 'cold', 'balanced', 'mathematical', 'all'],
+        help='Generate number recommendations (hot=frequent numbers, cold=overdue numbers, balanced=mixed strategy, mathematical=advanced algorithms, all=show all strategies)'
     )
     
     analysis_group.add_argument(
         '--visualize',
         action='store_true',
         help='Generate charts and detailed reports'
+    )
+    
+    analysis_group.add_argument(
+        '--advanced-viz',
+        action='store_true',
+        help='Generate advanced statistical visualizations and pattern analysis'
     )
     
     # Configuration options
@@ -238,13 +244,15 @@ def interactive_mode():
         print(f"\n🎯 {APP_NAME} - What would you like to do?")
         print("1. 📊 Run Analysis (frequency and patterns)")
         print("2. 🎲 Get Number Recommendations")
-        print("3. 📈 Generate Visualizations")
-        print("4. 🔄 Fetch Recent Data")
-        print("5. 📥 Fetch ALL Historical Data (since 2009)")
-        print("6. ℹ️  Show Database Status")
-        print("7. 🚪 Exit")
+        print("3. 📈 Generate Standard Visualizations")
+        print("4. 🎨 Generate Advanced Visualizations")
+        print("5. 🔬 Mathematical Randomizer")
+        print("6. 🔄 Fetch Recent Data")
+        print("7. 📥 Fetch ALL Historical Data (since 2009)")
+        print("8. ℹ️  Show Database Status")
+        print("9. 🚪 Exit")
         
-        choice = input("\nEnter your choice (1-7): ").strip()
+        choice = input("\nEnter your choice (1-9): ").strip()
         
         if choice == '1':
             run_analysis_interactive()
@@ -253,16 +261,20 @@ def interactive_mode():
         elif choice == '3':
             run_visualizations_interactive()
         elif choice == '4':
-            run_fetch_data()
+            run_advanced_visualizations_interactive()
         elif choice == '5':
-            run_fetch_all_data()
+            run_mathematical_generator_interactive()
         elif choice == '6':
-            show_status()
+            run_fetch_data()
         elif choice == '7':
+            run_fetch_all_data()
+        elif choice == '8':
+            show_status()
+        elif choice == '9':
             print("👋 Thank you for using Lotto Max Analyzer!")
             break
         else:
-            print("❌ Invalid choice. Please enter 1-7.")
+            print("❌ Invalid choice. Please enter 1-9.")
 
 
 def run_analysis_interactive():
@@ -395,6 +407,80 @@ def show_status():
     print(f"\nConfiguration:")
     print(f"App version: {VERSION}")
     print(f"Default analysis period: {DEFAULT_ANALYSIS_YEARS} years")
+
+
+def run_mathematical_generator_interactive():
+    """Run mathematical number generator in interactive mode with clean output."""
+    print("\n🧮 Mathematical Number Generator")
+    print("Generate lottery numbers using advanced mathematical algorithms.")
+    print()
+    
+    try:
+        from lotto_max_analyzer.data.storage import DataStorage
+        from lotto_max_analyzer.analysis.mathematical_randomizer import MathematicalRandomizer
+        
+        # Load historical data (quietly)
+        storage = DataStorage()
+        draws = storage.load_draws()
+        
+        if not draws:
+            print("❌ No historical data available. Please fetch data first (option 6 or 7).")
+            return
+        
+        print(f"📊 Using {len(draws)} historical draws for mathematical analysis")
+        
+        # Choose algorithm
+        print("\nChoose mathematical algorithm:")
+        print("1. 🔢 Complete Mathematical (combines all algorithms)")
+        print("2. 🌀 Chaos Theory (butterfly effect principles)")
+        print("3. 🌟 Fibonacci Sequence (natural patterns)")
+        print("4. 🔐 Prime Numbers (mathematical uniqueness)")
+        
+        algo_choice = input("\nEnter choice (1-4): ").strip()
+        
+        algorithm_map = {
+            '1': 'mathematical',
+            '2': 'chaos',
+            '3': 'fibonacci',
+            '4': 'prime'
+        }
+        
+        algorithm_names = {
+            'mathematical': 'Complete Mathematical',
+            'chaos': 'Chaos Theory',
+            'fibonacci': 'Fibonacci Sequence',
+            'prime': 'Prime Numbers'
+        }
+        
+        algorithm = algorithm_map.get(algo_choice, 'mathematical')
+        algorithm_name = algorithm_names[algorithm]
+        
+        # Generate multiple sets
+        count = input("\nHow many number sets to generate? (1-10, default 3): ").strip()
+        try:
+            count = int(count) if count else 3
+            count = max(1, min(count, 10))  # Limit between 1-10
+        except ValueError:
+            count = 3
+        
+        print(f"\n🎲 Generating {count} {algorithm_name} number sets...")
+        print("=" * 60)
+        
+        randomizer = MathematicalRandomizer()
+        
+        for i in range(count):
+            recommendation = randomizer.generate_numbers(draws, algorithm)
+            
+            print(f"\n🎯 Set {i+1}: {' - '.join(map(str, recommendation.numbers))}")
+            print(f"   Confidence: {recommendation.confidence:.2f}")
+            print(f"   Algorithm: {algorithm_name}")
+        
+        print(f"\n✅ Mathematical generation complete!")
+        print(f"💡 These numbers use sophisticated mathematical algorithms")
+        print(f"   combining entropy sources, statistical analysis, and mathematical principles.")
+        
+    except Exception as e:
+        print(f"❌ Error in mathematical generation: {e}")
 
 
 def run_fetch_data() -> bool:
@@ -560,6 +646,59 @@ def run_analysis(start_date: datetime, end_date: datetime) -> bool:
         return False
 
 
+def run_advanced_visualizations(start_date: datetime, end_date: datetime, output_dir: str) -> bool:
+    """Run advanced visualization generation."""
+    try:
+        from lotto_max_analyzer.data.storage import DataStorage
+        from lotto_max_analyzer.visualization.advanced_charts import AdvancedChartGenerator
+        
+        print("🎨 Creating advanced visualizations...")
+        storage = DataStorage()
+        draws = storage.load_draws(start_date=start_date, end_date=end_date)
+        
+        if not draws:
+            print("❌ No data available for visualization")
+            return False
+        
+        print(f"✅ Creating advanced visualizations from {len(draws)} draws")
+        
+        chart_generator = AdvancedChartGenerator()
+        
+        # Generate advanced charts
+        output_path = Path(output_dir)
+        
+        print("📊 Generating Advanced Charts:")
+        
+        # 1. Correlation heatmap
+        heatmap_path = output_path / "lotto_max_correlation_heatmap.png"
+        chart_generator.create_correlation_heatmap(draws, heatmap_path)
+        print(f"✅ Correlation heatmap: {heatmap_path.name}")
+        
+        # 2. Advanced pattern analysis
+        patterns_path = output_path / "lotto_max_advanced_patterns.png"
+        chart_generator.create_advanced_pattern_analysis(draws, patterns_path)
+        print(f"✅ Advanced patterns: {patterns_path.name}")
+        
+        # 3. Time series analysis
+        timeseries_path = output_path / "lotto_max_time_series.png"
+        chart_generator.create_time_series_analysis(draws, timeseries_path)
+        print(f"✅ Time series analysis: {timeseries_path.name}")
+        
+        # 4. Statistical distributions
+        stats_path = output_path / "lotto_max_statistical_distributions.png"
+        chart_generator.create_statistical_distribution_analysis(draws, stats_path)
+        print(f"✅ Statistical distributions: {stats_path.name}")
+        
+        print(f"\n✅ Advanced visualization complete!")
+        print(f"🎨 Advanced Charts: 4 files generated")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ Error creating advanced visualizations: {e}")
+        return False
+
+
 def run_recommendations(start_date: datetime, end_date: datetime, strategy: str) -> bool:
     """Run recommendations operation."""
     try:
@@ -602,7 +741,8 @@ def run_recommendations(start_date: datetime, end_date: datetime, strategy: str)
             strategy_mapping = {
                 'hot': 'hot_numbers',
                 'cold': 'cold_numbers',
-                'balanced': 'balanced'
+                'balanced': 'balanced',
+                'mathematical': 'mathematical'
             }
             
             internal_strategy = strategy_mapping.get(strategy, strategy)
@@ -795,7 +935,8 @@ def main():
             getattr(args, 'fetch_all', False),
             getattr(args, 'analyze', False),
             getattr(args, 'recommend', None) is not None,
-            getattr(args, 'visualize', False)
+            getattr(args, 'visualize', False),
+            getattr(args, 'advanced_viz', False)
         ]
         
         if not any(actions):
@@ -814,6 +955,10 @@ def main():
         # Execute requested operations
         success_count = 0
         total_operations = sum(actions)
+        
+        # Add advanced visualizations to operation count if requested
+        if getattr(args, 'advanced_viz', False):
+            total_operations += 1
         
         if getattr(args, 'fetch_data', False):
             print("🔄 Operation 1: Fetching Recent Data")
@@ -842,6 +987,12 @@ def main():
         if getattr(args, 'visualize', False):
             print(f"📈 Operation {success_count + 1}: Creating Visualizations")
             if run_visualizations(start_date, end_date, output_dir):
+                success_count += 1
+            print()
+        
+        if getattr(args, 'advanced_viz', False):
+            print(f"🎨 Operation {success_count + 1}: Creating Advanced Visualizations")
+            if run_advanced_visualizations(start_date, end_date, output_dir):
                 success_count += 1
             print()
         

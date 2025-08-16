@@ -261,6 +261,12 @@ class RecommendationEngine:
         Returns:
             Recommendation object with numbers, confidence, and rationale
         """
+        if strategy == 'mathematical':
+            # Use mathematical randomizer
+            from .mathematical_randomizer import MathematicalRandomizer
+            randomizer = MathematicalRandomizer()
+            return randomizer.generate_numbers(draws, 'mathematical')
+        
         numbers = self.create_full_combination(draws, strategy)
         
         # Calculate confidence based on data quality and strategy
@@ -289,13 +295,19 @@ class RecommendationEngine:
             Dictionary mapping strategy names to Recommendation objects
         """
         if strategies is None:
-            strategies = ['hot_numbers', 'cold_numbers', 'balanced']
+            strategies = ['hot_numbers', 'cold_numbers', 'balanced', 'mathematical']
         
         recommendations = {}
         
         for strategy in strategies:
             try:
-                recommendation = self.generate_recommendation_with_rationale(draws, strategy)
+                if strategy == 'mathematical':
+                    # Use mathematical randomizer
+                    from .mathematical_randomizer import MathematicalRandomizer
+                    randomizer = MathematicalRandomizer()
+                    recommendation = randomizer.generate_numbers(draws, 'mathematical')
+                else:
+                    recommendation = self.generate_recommendation_with_rationale(draws, strategy)
                 recommendations[strategy] = recommendation
                 self.logger.info(f"Generated {strategy} recommendation: {recommendation.numbers}")
             except Exception as e:
