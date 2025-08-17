@@ -12,6 +12,7 @@ import logging
 from dataclasses import dataclass
 
 from ..data.models import DrawResult, Recommendation
+from .ml_predictor import MLPredictor
 
 
 @dataclass
@@ -46,6 +47,7 @@ class MathematicalRandomizer:
         """Initialize the mathematical randomizer."""
         self.config = config or RandomizerConfig()
         self.logger = logging.getLogger(__name__)
+        self.ml_predictor = MLPredictor()
         
         # Pre-calculate mathematical constants
         self.golden_ratio = (1 + np.sqrt(5)) / 2
@@ -62,6 +64,12 @@ class MathematicalRandomizer:
         self.entropy_pool = self._initialize_entropy_pool()
         
         self.logger.info("Mathematical randomizer initialized with advanced algorithms")
+
+    def train_ml_model(self, historical_draws: List[DrawResult]):
+        """Train the machine learning model."""
+        self.logger.info("Starting ML model training...")
+        self.ml_predictor.train(historical_draws)
+        self.logger.info("ML model training complete.")
     
     def generate_numbers(self, historical_draws: List[DrawResult], 
                         strategy: str = 'mathematical') -> Recommendation:
@@ -70,7 +78,7 @@ class MathematicalRandomizer:
         
         Args:
             historical_draws: Historical draw data for bias correction
-            strategy: Generation strategy ('mathematical', 'chaos', 'fibonacci', 'prime')
+            strategy: Generation strategy ('mathematical', 'chaos', 'fibonacci', 'prime', 'ml_hybrid')
             
         Returns:
             Recommendation with mathematically generated numbers
@@ -89,6 +97,9 @@ class MathematicalRandomizer:
         elif strategy == 'prime':
             numbers = self._generate_prime_numbers(historical_draws)
             reasoning = "Prime number theory-based generation for uniqueness"
+        elif strategy == 'ml_hybrid':
+            numbers = self._generate_ml_hybrid_numbers(historical_draws)
+            reasoning = "Hybrid generation using a weighted scoring system of historical data and ML predictions"
         else:
             numbers = self._generate_mathematical_numbers(historical_draws)
             reasoning = "Default mathematical algorithm"
@@ -140,6 +151,40 @@ class MathematicalRandomizer:
         final_numbers = self._select_final_numbers(candidates)
         
         return final_numbers
+
+    def _generate_ml_hybrid_numbers(self, historical_draws: List[DrawResult]) -> List[int]:
+        """Generate numbers using a hybrid ML and statistical approach."""
+
+        # 1. Get ML predictions
+        if not self.ml_predictor.is_trained:
+            self.train_ml_model(historical_draws)
+        
+        ml_probs = self.ml_predictor.predict_probabilities(historical_draws)
+
+        # 2. Get statistical scores (frequency and recency)
+        freq_map = {}
+        recency_map = {}
+        for i, draw in enumerate(historical_draws):
+            for num in draw.numbers:
+                freq_map[num] = freq_map.get(num, 0) + 1
+                recency_map[num] = i # Higher is more recent
+
+        # 3. Calculate weighted scores for each number
+        weighted_scores = {}
+        for num in range(1, 51):
+            # Normalize scores to be between 0 and 1
+            freq_score = freq_map.get(num, 0) / len(historical_draws)
+            recency_score = recency_map.get(num, 0) / len(historical_draws)
+            ml_score = ml_probs.get(num, 0)
+
+            # Combine scores with weights
+            score = (0.3 * freq_score) + (0.3 * recency_score) + (0.4 * ml_score)
+            weighted_scores[num] = score
+
+        # 4. Select the top 7 numbers based on the weighted scores
+        sorted_numbers = sorted(weighted_scores, key=weighted_scores.get, reverse=True)
+        
+        return sorted_numbers[:7]
     
     def _generate_chaos_numbers(self, historical_draws: List[DrawResult]) -> List[int]:
         """Generate numbers using chaos theory principles."""

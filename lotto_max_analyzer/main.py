@@ -66,8 +66,8 @@ Examples:
     
     analysis_group.add_argument(
         '--recommend',
-        choices=['hot', 'cold', 'balanced', 'mathematical', 'all'],
-        help='Generate number recommendations (hot=frequent numbers, cold=overdue numbers, balanced=mixed strategy, mathematical=advanced algorithms, all=show all strategies)'
+        choices=['hot', 'cold', 'balanced', 'mathematical', 'ml_hybrid', 'all'],
+        help='Generate number recommendations (hot=frequent, cold=overdue, balanced=mixed, mathematical=advanced algorithms, ml_hybrid=machine learning hybrid, all=show all)'
     )
     
     analysis_group.add_argument(
@@ -247,12 +247,13 @@ def interactive_mode():
         print("3. 📈 Generate Standard Visualizations")
         print("4. 🎨 Generate Advanced Visualizations")
         print("5. 🔬 Mathematical Randomizer")
-        print("6. 🔄 Fetch Recent Data")
-        print("7. 📥 Fetch ALL Historical Data (since 2009)")
-        print("8. ℹ️  Show Database Status")
-        print("9. 🚪 Exit")
+        print("6. 🤖 ML Hybrid Generator")
+        print("7. 🔄 Fetch Recent Data")
+        print("8. 📥 Fetch ALL Historical Data (since 2009)")
+        print("9. ℹ️  Show Database Status")
+        print("10. 🚪 Exit")
         
-        choice = input("\nEnter your choice (1-9): ").strip()
+        choice = input("\nEnter your choice (1-10): ").strip()
         
         if choice == '1':
             run_analysis_interactive()
@@ -265,16 +266,18 @@ def interactive_mode():
         elif choice == '5':
             run_mathematical_generator_interactive()
         elif choice == '6':
-            run_fetch_data()
+            run_ml_hybrid_generator_interactive()
         elif choice == '7':
-            run_fetch_all_data()
+            run_fetch_data()
         elif choice == '8':
-            show_status()
+            run_fetch_all_data()
         elif choice == '9':
+            show_status()
+        elif choice == '10':
             print("👋 Thank you for using Lotto Max Analyzer!")
             break
         else:
-            print("❌ Invalid choice. Please enter 1-9.")
+            print("❌ Invalid choice. Please enter 1-10.")
 
 
 def run_analysis_interactive():
@@ -327,15 +330,17 @@ def run_recommendations_interactive():
     print("1. 🔥 Hot Numbers (frequently appearing)")
     print("2. ❄️  Cold Numbers (overdue/infrequent)")
     print("3. ⚖️  Balanced (mixed approach)")
-    print("4. 📋 All Strategies")
+    print("4. 🤖 ML Hybrid (Machine Learning)")
+    print("5. 📋 All Strategies")
     
-    strategy_choice = input("Choose strategy (1-4): ").strip()
+    strategy_choice = input("Choose strategy (1-5): ").strip()
     
     strategy_map = {
         '1': 'hot',
         '2': 'cold', 
         '3': 'balanced',
-        '4': 'all'
+        '4': 'ml_hybrid',
+        '5': 'all'
     }
     
     strategy = strategy_map.get(strategy_choice)
@@ -481,6 +486,49 @@ def run_mathematical_generator_interactive():
         
     except Exception as e:
         print(f"❌ Error in mathematical generation: {e}")
+
+
+def run_ml_hybrid_generator_interactive():
+    """Run ML hybrid number generator in interactive mode."""
+    print("\n🤖 ML Hybrid Number Generator")
+    print("Generate lottery numbers using a hybrid of statistical analysis and machine learning.")
+    print()
+
+    try:
+        from lotto_max_analyzer.data.storage import DataStorage
+        from lotto_max_analyzer.analysis.mathematical_randomizer import MathematicalRandomizer
+
+        # Load historical data
+        storage = DataStorage()
+        draws = storage.load_draws()
+
+        if not draws:
+            print("❌ No historical data available. Please fetch data first.")
+            return
+
+        print(f"📊 Using {len(draws)} historical draws for ML model training and generation.")
+        
+        # Initialize randomizer and train the model
+        randomizer = MathematicalRandomizer()
+        print("🧠 Training ML model... (This may take a moment)")
+        randomizer.train_ml_model(draws)
+
+        # Generate numbers
+        print("\n🎲 Generating ML Hybrid number set...")
+        print("=" * 60)
+        
+        recommendation = randomizer.generate_numbers(draws, 'ml_hybrid')
+
+        print(f"\n🎯 Set: {' - '.join(map(str, recommendation.numbers))}")
+        print(f"   Confidence: {recommendation.confidence:.2f}")
+        print(f"   Strategy: ML Hybrid")
+        
+        print("\n✅ ML Hybrid generation complete!")
+        print("💡 These numbers were generated using a weighted scoring system combining")
+        print("   historical frequency, recency, and LSTM neural network predictions.")
+
+    except Exception as e:
+        print(f"❌ Error in ML Hybrid generation: {e}")
 
 
 def run_fetch_data() -> bool:
