@@ -1,0 +1,95 @@
+================================================================================
+LOTTO MAX RECOMMENDATION REPORT
+================================================================================
+
+RECOMMENDATION SUMMARY
+----------------------------------------
+Number of Strategies: 3
+Average Confidence: 0.42
+
+Hot Numbers STRATEGY
+----------------------------------------
+Recommended Numbers: 2, 9, 14, 21, 30, 37, 49
+Confidence Score: 0.48
+
+Strategy Rationale:
+  Hot number strategy based on 419 historical draws. Selected numbers
+  with highest frequency of appearance. Selected numbers appear more
+  frequently than average. Odd/even split: 4-3 matches common
+  patterns. Numbers well-distributed across different ranges.
+
+Number Analysis:
+  Average Frequency: 72.0
+  Overall Average: 58.7
+  Frequency Ratio: 1.23x
+  Odd/Even Split: 4-3
+  Range Distribution:
+    Low (1-10): 2 numbers
+    Mid Low (11-20): 1 numbers
+    Mid (21-30): 2 numbers
+    Mid High (31-40): 1 numbers
+    High (41-50): 1 numbers
+
+Cold Numbers STRATEGY
+----------------------------------------
+Recommended Numbers: 8, 18, 23, 24, 33, 34, 46
+Confidence Score: 0.24
+
+Strategy Rationale:
+  Cold number strategy based on 419 historical draws. Selected numbers
+  that are overdue or have low frequency. Selected numbers appear less
+  frequently than average. Odd/even split: 2-5 matches common
+  patterns. Numbers well-distributed across different ranges.
+
+Number Analysis:
+  Average Frequency: 52.1
+  Overall Average: 58.7
+  Frequency Ratio: 0.89x
+  Odd/Even Split: 2-5
+  Range Distribution:
+    Low (1-10): 1 numbers
+    Mid Low (11-20): 1 numbers
+    Mid (21-30): 2 numbers
+    Mid High (31-40): 2 numbers
+    High (41-50): 1 numbers
+
+Balanced STRATEGY
+----------------------------------------
+Recommended Numbers: 9, 16, 19, 21, 34, 37, 46
+Confidence Score: 0.54
+
+Strategy Rationale:
+  Balanced strategy combining multiple factors from 419 draws. Mixed
+  hot numbers, overdue numbers, and pattern-based selections. Selected
+  numbers have balanced frequency distribution. Odd/even split: 4-3
+  matches common patterns. Numbers well-distributed across different
+  ranges.
+
+Number Analysis:
+  Average Frequency: 63.0
+  Overall Average: 58.7
+  Frequency Ratio: 1.07x
+  Odd/Even Split: 4-3
+  Range Distribution:
+    Low (1-10): 1 numbers
+    Mid Low (11-20): 2 numbers
+    Mid (21-30): 1 numbers
+    Mid High (31-40): 2 numbers
+    High (41-50): 1 numbers
+
+STRATEGY COMPARISON
+----------------------------------------
+Confidence Rankings:
+1. Balanced: 0.54
+2. Hot Numbers: 0.48
+3. Cold Numbers: 0.24
+
+Average Frequency Rankings:
+1. Hot Numbers: 72.0
+2. Balanced: 63.0
+3. Cold Numbers: 52.1
+
+Total Unique Numbers Across Strategies: 16
+No numbers common to all strategies.
+
+================================================================================

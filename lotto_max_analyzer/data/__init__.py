@@ -1,0 +1,1 @@
+"""Data layer for Lotto Max Analyzer."""
